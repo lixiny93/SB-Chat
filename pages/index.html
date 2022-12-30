@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index - SB Chat</title>
+    <link rel="stylesheet" href="./lib/bootstrap/css/bootstrap.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">SB Chat</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="">Index</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://www.tianriv.top">作者主页</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="bottom" style="position: fixed;bottom: 6px;width: 100%;">
+        <div class="container text-center" style="display: flex; align-items: center;">
+            <div class="col">
+                <input type="text" class="form-control" placeholder="message" id="message_input">
+            </div>
+            <div style="margin-left: 5px;">
+                <input type="button" class="btn btn-success" value="发送" onclick="send()">
+            </div>
+            
+        </div>
+    </div>
+    <div class="message-body" style="width: 100%; height: 100%; margin-top: 15px; padding-left: 15px; padding-right: 15px;">
+        <ul class="list-group" id="message-list">
+
+        </ul>
+    </div>
+    <script>
+        console.log("作者 Tianri")
+        var user = window.prompt("用户名:")
+        var message_list = document.getElementById("message-list")
+        var ws = new WebSocket("ws://127.0.0.1:9897")
+        ws.onopen = () => {
+            console.log("连接成功")
+            var conn_ok = document.createElement('li')
+            message_list.appendChild(conn_ok)
+            conn_ok.textContent = "连接成功!"
+            conn_ok.classList.add("list-group-item")
+            if(localStorage.getItem("chats") != null) {
+                var old_mess = document.createElement("p")
+                message_list.appendChild(old_mess)
+                old_mess.classList.add("list-group-item")
+                old_mess.innerHTML = "[old message]" +localStorage.getItem('chats')
+            }
+            
+            
+        }
+        ws.onmessage = (eve) => {
+            console.log('得到消息')
+            var message = document.createElement('li')
+            message_list.appendChild(message)
+            message.classList.add("list-group-item")
+            message.setAttribute('id','chats')
+            message.innerHTML = eve.data
+            if(localStorage.getItem("chats") != undefined) {
+                localStorage.setItem('chats',localStorage.getItem('chats') + " " +document.getElementById('chats').innerHTML)
+            }else {
+                localStorage.setItem('chats',document.getElementById('chats').innerHTML)
+            }
+            
+        }
+        ws.onclose = function()
+        { 
+            console.log("连接以取消")
+            var conn_ok = document.createElement('li')
+            message_list.appendChild(conn_ok)
+            conn_ok.textContent = "连接以取消"
+            conn_ok.classList.add("list-group-item")
+        };
+        ws.onerror = () => {
+            console.error("WebSocket Error")
+        }
+        function send() {
+            var mess = document.getElementById('message_input')
+            if(mess.value == "") {
+                alert("输入框禁止为空！")
+            }else {
+                ws.send(user + " : " + mess.value)
+                mess.value = ""
+            }
+            
+        }
+        
+        function enter(e) {
+            var key
+            key = e.which
+            console.log(key)
+            if(key == 13) {
+                send()
+            }
+        }
+        function clear() {
+            localStorage.removeItem("chats")
+        }
+        document.onkeyup = enter
+    </script>
+    <script src="./lib/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>
