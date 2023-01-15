@@ -4,8 +4,9 @@ a chat group?
 这是一个我随便制作的东西
 用
 ```
-node index.js
+npm install
+npm start
 ```
 即可运行
 
-release里的版本仅仅是加了个一键启动的bat文件
+release（源码也有了现在）里的版本仅仅是加了个一键启动的bat文件
