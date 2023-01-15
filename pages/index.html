@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="./lib/bootstrap/css/bootstrap.min.css">
 </head>
 <body>
+    <!--恭喜你看到这个注释，其实这个网页也可以用于其他websocket项目，不过需要手动适配！-->
     <nav class="navbar navbar-expand-lg bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">SB Chat</a>
@@ -20,7 +21,10 @@
                         <a class="nav-link active" aria-current="page" href="">Index</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="https://www.tianriv.top">作者主页</a>
+                        <a class="nav-link" href="https://www.tianriv.top">作者主页[1]</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="https://voidd.net" class="nav-link">作者主页[2]</a>
                     </li>
                 </ul>
             </div>
@@ -43,10 +47,17 @@
         </ul>
     </div>
     <script>
+        var server_ws = window.prompt("聊天服务器地址:")
         console.log("作者 Tianri")
         var user = window.prompt("用户名:")
         var message_list = document.getElementById("message-list")
-        var ws = new WebSocket("ws://127.0.0.1:9897")
+        var ws
+        try {
+            ws = new WebSocket(server_ws)
+        }catch {
+            window.alert("你在服务器地址里输入了什么啊！WebSocket连接失败了啊！")
+        }
+        
         ws.onopen = () => {
             console.log("连接成功")
             var conn_ok = document.createElement('li')
